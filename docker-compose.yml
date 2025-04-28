@@ -24,6 +24,16 @@ services:
       - g-auth-net
     # No volume needed for simple cache testing unless persistence is required
 
+  migrate:
+    image: migrate/migrate
+    depends_on:
+      - postgres_db
+    volumes:
+      - ./migrations:/migrations
+    command: ["-path", "/migrations", "-database", "postgres://testuser:testpass@postgres_db:5432/testdb?sslmode=disable", "up"]
+    networks:
+      - g-auth-net
+
   auth_server:
     build:
       context: .
@@ -35,6 +45,7 @@ services:
     depends_on:
       - postgres_db
       - redis_cache
+      - migrate
     networks:
       - g-auth-net
 
