@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    image: postgres:15 # Use a specific Postgres version (e.g., 15)
+    container_name: g-auth-postgres-test
+    environment:
+      POSTGRES_USER: testuser       # Corresponds to DB_USER
+      POSTGRES_PASSWORD: testpass   # Corresponds to DB_PASSWORD
+      POSTGRES_DB: testdb           # Corresponds to DB_NAME
+    ports:
+      - "5432:5432"               # Maps host port 5432 to container port 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist data across restarts
+    networks:
+      - g-auth-net
+
+  redis_cache:
+    image: redis:alpine # Use a lightweight Redis image
+    container_name: g-auth-redis-test
+    ports:
+      - "6379:6379" # Map host port 6379 to container port 6379
+    networks:
+      - g-auth-net
+    # No volume needed for simple cache testing unless persistence is required
+
+volumes:
+  postgres_data: # Define the named volume
+
+networks:
+  g-auth-net:
+    driver: bridge
