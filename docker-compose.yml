@@ -24,6 +24,20 @@ services:
       - g-auth-net
     # No volume needed for simple cache testing unless persistence is required
 
+  auth_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres_db
+      - redis_cache
+    networks:
+      - g-auth-net
+
 volumes:
   postgres_data: # Define the named volume
 
